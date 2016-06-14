@@ -7,7 +7,7 @@
 #include "TextureManager.h"
 #include "EntityManager.h"
 #include "EngineConstants.h"
-#include "SimpleBox.h"
+#include "Meteor.h"
 
 class Game
 {

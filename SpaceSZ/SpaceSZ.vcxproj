@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DisplayInfo.h" />
     <ClInclude Include="EngineConstants.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityManager.h" />
@@ -26,7 +27,8 @@
     <ClInclude Include="GameFactory.h" />
     <ClInclude Include="GroundExample.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="SimpleBox.h" />
+    <ClInclude Include="Meteor.h" />
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="TextureManager.h" />
   </ItemGroup>
   <ItemGroup>
@@ -35,7 +37,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="SimpleBox.cpp" />
+    <ClCompile Include="Meteor.cpp" />
     <ClCompile Include="TextureManager.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

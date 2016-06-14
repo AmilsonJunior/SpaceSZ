@@ -28,11 +28,10 @@ void EntityManager::AddGameObject(const std::string & _name, Entity * _obj)
 
 void EntityManager::DeleteGameObject(const std::string & _name)
 {
-	std::map<std::string, Entity*>::iterator result = _objects.find(_name);
+	std::map<std::string, Entity*>::const_iterator result = _objects.find(_name);
 	if (result != _objects.end())
 	{
-		result->second = NULL;
-		delete result->second;
+		delete &result->second;
 		_objects.erase(result);
 	}
 }
@@ -58,7 +57,10 @@ void EntityManager::UpdateAll(float time)
 		}
 
 		else
+		{
 			x.second->Update(time);
+		}
+			
 	}
 
 	for (auto& x : trash)
@@ -82,10 +84,18 @@ void EntityManager::RenderAll(sf::RenderWindow& wnd)
 
 void EntityManager::DeleteAll()
 {
-	for (auto& x : _objects)
+	if (!_objects.empty())
 	{
-		DeleteGameObject(x.first);
+		std::map<std::string, Entity*>::iterator it = _objects.begin();
+
+		while (it != _objects.end())
+		{
+			it->second = NULL;
+			delete it->second;
+			it++;
+		}
+
+		_objects.clear();
 	}
 
-	_objects.clear();
 }

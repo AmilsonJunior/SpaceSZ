@@ -15,9 +15,11 @@ Entity::~Entity()
 {
 	delete texture;
 	delete bodyDef;
-//	delete bodyShape;
+	//delete this->bodyShape;
 	delete fixDef;
 	delete texture;
+
+	std::cout << "Entity destroyed\n";
 }
 
 void Entity::Initialize(b2Shape* shape, sf::Vector2f pos, bool dynamic, float scale)
@@ -58,7 +60,6 @@ void Entity::Update(float frameTime)
 	}
 
 	sprite.setPosition(body->GetPosition().x * 30.f, body->GetPosition().y * 30.f);
-	sprite.setRotation(180 / b2_pi * body->GetAngle());
 }
 
 void Entity::PostUpdate(float frametime)

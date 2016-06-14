@@ -2,17 +2,17 @@
 #include "Entity.h"
 #include "EngineConstants.h"
 
-class SimpleBox : public Entity
+class Meteor : public Entity
 {
 public:
-	SimpleBox(b2World* world, sf::Vector2f pos, bool dynamic);
-	~SimpleBox();
+	Meteor(b2World* world, sf::Vector2f pos, bool dynamic);
+	~Meteor();
 
 	void PostUpdate(float time);
 	void Draw(sf::RenderWindow& wnd);
 
 private:
-	b2PolygonShape* shape;
+	b2CircleShape* shape;
 	b2Vec2 vel;
 };
 

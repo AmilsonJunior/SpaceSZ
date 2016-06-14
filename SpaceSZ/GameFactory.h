@@ -8,15 +8,16 @@
 #include "TextureManager.h"
 #include "GroundExample.h"
 #include "Player.h"
+#include "Meteor.h"
+
 
 namespace
 {
-	void RegisterGameObject(const std::string& _name, Entity* obj);
-	void CreateBox(float x, float y);
+	void CreateMeteor(float x, float y);
 	void CreateGameObjects();
 	void CreatePlayer();
 	void GameLoop();
-	void CreateMeteor();
+	void MeteorFuncThread();
 	void Init();
 
 	std::string GenerateRandomID();
@@ -29,16 +30,10 @@ namespace
 
 	sf::Sprite gameOver;
 
-	//Register a game object
-	void RegisterGameObject(const std::string& _name, Entity* obj)
-	{
-		Game::entityManager->AddGameObject(_name, obj);
-	}
-
 	//Create all game objects
 	void CreateGameObjects()
 	{
-		Game::textureManager->AddResource("Assets/textures/box.png");
+		Game::textureManager->AddResource("Assets/textures/meteor1.png");
 		Game::textureManager->AddResource("Assets/textures/space_ship.png");
 		Game::textureManager->AddResource("Assets/textures/bullet.png");
 		Game::textureManager->AddResource("Assets/textures/ground.png");
@@ -60,20 +55,40 @@ namespace
 		if (Game::entityManager->Count() != 0)
 		{
 			Game::entityManager->DeleteGameObject("Player");
+			Game::entityManager->DeleteAll();
 		}
 
 		CreatePlayer();
 	}
 
-	void CreateMeteor()
+	void MeteorFuncThread()
 	{
 		while (true)
 		{
 			Sleep(100);
-			mu.lock();
-			SimpleBox* box = new SimpleBox(Game::GameWorld, sf::Vector2f(rand() % Constants::WND_WIDTH, -(rand() % 20)), true);
-			meteorsList.push_back(box);
-			mu.unlock();
+
+			if (Game::gameState == Game::GameState::PLAYING)
+			{
+				mu.lock();
+				Meteor* box = new Meteor(Game::GameWorld, sf::Vector2f(rand() % Constants::WND_WIDTH, -(rand() % 20)), true);
+				meteorsList.push_back(box);
+				mu.unlock();
+
+				std::cout << "opaaaaa" << meteorsList.size() << std::endl;
+			}
+			else
+			{
+				mu.lock();
+				for (auto& x : meteorsList)
+				{
+					x = NULL;
+					delete x;
+					//meteorsList.erase(std::remove(meteorsList.begin(), meteorsList.end(), x));
+				}
+
+				meteorsList.clear();
+				mu.unlock();
+			}
 		}
 	}
 
@@ -82,15 +97,17 @@ namespace
 		mu.lock();
 		if (!meteorsList.empty())
 		{
-			RegisterGameObject("meteor" + GenerateRandomID(), meteorsList[meteorsList.size() - 1]);
+			Game::entityManager->AddGameObject("meteor" + GenerateRandomID(), meteorsList[meteorsList.size() - 1]);
+			meteorsList.pop_back();
 		}
 		mu.unlock();
 	}
+	
 
-	void CreateBox(float x, float y)
+	void CreateMeteor(float x, float y)
 	{
-		SimpleBox* box = new SimpleBox(Game::GameWorld, sf::Vector2f(x, y), true);
-		RegisterGameObject("box" + GenerateRandomID(), box);
+		Meteor* meteor = new Meteor(Game::GameWorld, sf::Vector2f(x, y), true);
+		Game::entityManager->AddGameObject("meteor" + GenerateRandomID(), meteor);
 	}
 	
 	void CreatePlayer()
@@ -98,7 +115,7 @@ namespace
 		mu.lock();
 		Player* player = new Player(Game::GameWorld, sf::Vector2f(400, 500));
 		mu.unlock();
-		RegisterGameObject("Player", player);
+		Game::entityManager->AddGameObject("Player", player);
 	}
 
 	std::string GenerateRandomID()

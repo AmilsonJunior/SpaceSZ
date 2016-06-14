@@ -2,9 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="Game.h" />
-    <ClInclude Include="SimpleBox.h">
-      <Filter>GameObjects</Filter>
-    </ClInclude>
     <ClInclude Include="Entity.h">
       <Filter>GameObjects</Filter>
     </ClInclude>
@@ -24,13 +21,19 @@
     <ClInclude Include="Player.h">
       <Filter>GameObjects\Player</Filter>
     </ClInclude>
+    <ClInclude Include="Meteor.h">
+      <Filter>GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>GameObjects\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="DisplayInfo.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="SimpleBox.cpp">
-      <Filter>GameObjects</Filter>
-    </ClCompile>
     <ClCompile Include="Entity.cpp">
       <Filter>GameObjects</Filter>
     </ClCompile>
@@ -42,6 +45,9 @@
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>GameObjects\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Meteor.cpp">
+      <Filter>GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

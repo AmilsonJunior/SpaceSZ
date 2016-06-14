@@ -8,13 +8,17 @@ class Entity
 {
 public:
 	Entity(b2World* world, bool dynamic, const sf::Vector2f& pos);
-	~Entity();
+	virtual ~Entity();
 	
 	virtual void Update(float frameTime);
 	virtual void Draw(sf::RenderWindow& wnd);
 	virtual void HandleEvents(sf::Event& event);
 	bool isActive() const { return active; }
 	sf::Vector2f GetPosition() const { return sprite.getPosition(); }
+
+	std::string typeName;
+	std::string ID;
+
 protected:
 	void Load(const std::string& name);
 	void Initialize(b2Shape* shape, sf::Vector2f pos, bool dynamic, float scale = 1);

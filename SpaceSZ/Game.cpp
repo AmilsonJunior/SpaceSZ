@@ -1,6 +1,6 @@
 #include "Game.h"
 #include "GameFactory.h"
-
+#include "DisplayInfo.h"
 
 Game::Game()
 	: gravity(0, 0.0f)
@@ -31,7 +31,9 @@ Game::~Game()
 
 void Game::Run()
 {
-	threadMeteor = new std::thread(CreateMeteor);
+	threadMeteor = new std::thread(MeteorFuncThread);
+
+	DisplayInfo::Init();
 
 	while (window.isOpen())
 	{
@@ -79,6 +81,9 @@ void Game::Render()
 		GameOver();
 	}
 
+	DisplayInfo::ShowObjectCounter(window);
+	DisplayInfo::ShowFPS(window, clock);
+
 	window.display();
 }
 
@@ -112,6 +117,7 @@ void Game::HandleEvents()
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 			{
 				Init();
+
 			}
 		}
 	}
