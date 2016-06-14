@@ -50,6 +50,7 @@ void Player::PostUpdate(float frametime)
 	{
 		//Game Over!
 		active = false;
+		Game::gameState = Game::GameState::GAMEOVER;
 	}
 
 	body->SetLinearVelocity(vel);

@@ -79,3 +79,13 @@ void EntityManager::RenderAll(sf::RenderWindow& wnd)
 		it++;
 	}
 }
+
+void EntityManager::DeleteAll()
+{
+	for (auto& x : _objects)
+	{
+		DeleteGameObject(x.first);
+	}
+
+	_objects.clear();
+}

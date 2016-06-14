@@ -17,6 +17,8 @@ namespace
 	void CreatePlayer();
 	void GameLoop();
 	void CreateMeteor();
+	void Init();
+
 	std::string GenerateRandomID();
 
 	int gameObjectCount = 1;
@@ -25,6 +27,7 @@ namespace
 	std::thread* threadMeteor;
 	std::mutex mu;
 
+	sf::Sprite gameOver;
 
 	//Register a game object
 	void RegisterGameObject(const std::string& _name, Entity* obj)
@@ -40,11 +43,24 @@ namespace
 		Game::textureManager->AddResource("Assets/textures/bullet.png");
 		Game::textureManager->AddResource("Assets/textures/ground.png");
 		Game::textureManager->AddResource("Assets/textures/default_text.png");
-
+		Game::textureManager->AddResource("Assets/textures/gameover.png");
 		Game::textureManager->LoadAllTextures();
-	
-		/*Ground* ground = new Ground(Game::GameWorld, sf::Vector2f(300, 600));
-		RegisterGameObject("ground", ground);*/
+
+		Init();
+
+		gameOver.setTexture(*Game::textureManager->Get("Assets/textures/gameover.png"));
+		gameOver.setOrigin(gameOver.getGlobalBounds().width / 2, gameOver.getGlobalBounds().height / 2);
+		gameOver.setPosition(sf::Vector2f(Constants::WND_WIDTH / 2, Constants::WND_HEIGHT / 2));
+	}
+
+	void Init()
+	{
+		Game::gameState = Game::GameState::PLAYING;
+
+		if (Game::entityManager->Count() != 0)
+		{
+			Game::entityManager->DeleteGameObject("Player");
+		}
 
 		CreatePlayer();
 	}

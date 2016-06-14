@@ -18,7 +18,7 @@ public:
 	int Count() const { return _objects.size(); }
 	void UpdateAll(float time);
 	void RenderAll(sf::RenderWindow& wnd);
-
+	void DeleteAll();
 private:
 	std::map<std::string, Entity*> _objects;
 	std::vector<std::string> trash;

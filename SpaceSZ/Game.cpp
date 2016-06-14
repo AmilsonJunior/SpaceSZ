@@ -48,7 +48,7 @@ void Game::MainMenu()
 
 void Game::GameOver()
 {
-	std::cout << "GameOver!\n";
+	window.draw(gameOver);
 }
 
 void Game::PauseMenu()
@@ -77,8 +77,6 @@ void Game::Render()
 	{
 		// Show a message
 		GameOver();
-		// Back to main menu
-		MainMenu();
 	}
 
 	window.display();
@@ -86,12 +84,15 @@ void Game::Render()
 
 void Game::Update()
 {
-	mu.lock();
-	GameWorld->Step(1 / 60.f, 8, 3);
-	mu.unlock();
+	if (gameState == GameState::PLAYING)
+	{
+		mu.lock();
+		GameWorld->Step(1 / 60.f, 8, 3);
+		mu.unlock();
 
-	GameLoop();
-	entityManager->UpdateAll(clock.restart().asMilliseconds());
+		GameLoop();
+		entityManager->UpdateAll(clock.restart().asMilliseconds());
+	}
 }
 
 void Game::HandleEvents()
@@ -106,19 +107,13 @@ void Game::HandleEvents()
 			window.close();
 		}
 
-		if (ev.type == sf::Event::KeyPressed)
+		if (gameState == GameState::GAMEOVER)
 		{
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 			{
-				PauseMenu();
-
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-				{
-					MainMenu();
-				}
+				Init();
 			}
 		}
-			
 	}
 }
 
