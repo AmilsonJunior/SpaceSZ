@@ -18,6 +18,8 @@ public:
 	std::shared_ptr<Entity> GetGameObject(const std::string& _name) const;
 	int Count() const { return _objects.size(); }
 	void RulesCollision();
+	int Collisions() const { return collisions; }
+	void ResetCollisions() { collisions = 0; }
 	void UpdateAll(float time);
 	void RenderAll(sf::RenderWindow& wnd);
 	void DeleteAll();
@@ -25,5 +27,6 @@ public:
 private:
 	std::map<std::string, std::shared_ptr<Entity>> _objects;
 	std::vector<std::string> trash;
+	int collisions;
 };
 

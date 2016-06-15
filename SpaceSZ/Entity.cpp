@@ -17,7 +17,6 @@ Entity::~Entity()
 	delete bodyDef;
 	delete fixDef;
 	this->body->GetWorld()->DestroyBody(this->body);
-	//std::cout << "Entity destroyed\n";
 }
 
 void Entity::Initialize(b2Shape* shape, sf::Vector2f pos, bool dynamic, float scale)
@@ -53,7 +52,7 @@ void Entity::Update(float frameTime)
 
 	if (sprite.getPosition().x > Constants::WND_WIDTH || sprite.getPosition().x < 0 || sprite.getPosition().y > Constants::WND_HEIGHT || sprite.getPosition().y < -100)
 	{
-		//Saiu da view ()
+		//Saiu da cena, desativa.
 		active = false;
 	}
 

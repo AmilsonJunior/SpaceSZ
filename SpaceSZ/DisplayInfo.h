@@ -5,7 +5,7 @@
 
 namespace DisplayInfo
 {
-	sf::Text textObj, textureCounter, fpsText;
+	sf::Text score;
 	sf::Font font;
 
 	void Init()
@@ -15,34 +15,15 @@ namespace DisplayInfo
 			return;
 		}
 
-		textObj.setFont(font);
-		textObj.setCharacterSize(20);
-		textObj.setColor(sf::Color::White);
-		textObj.setPosition(sf::Vector2f(10, 10));
-
-		textureCounter.setFont(font);
-		textureCounter.setCharacterSize(20);
-		textureCounter.setColor(sf::Color::White);
-		textureCounter.setPosition(sf::Vector2f(10, 30));
-
-		fpsText.setFont(font);
-		fpsText.setCharacterSize(20);
-		fpsText.setColor(sf::Color::Yellow);
-		fpsText.setPosition(sf::Vector2f(10, 60));
+		score.setFont(font);
+		score.setCharacterSize(20);
+		score.setColor(sf::Color::White);
+		score.setPosition(sf::Vector2f(10, 10));
 	}
 
-	void ShowObjectCounter(sf::RenderWindow& wnd)
+	void ShowScore(sf::RenderWindow& wnd)
 	{
-		textObj.setString("Objects: " + std::to_string(Game::entityManager->Count()));
-		wnd.draw(textObj);
-		textureCounter.setString("Textures loaded: " + std::to_string(Game::textureManager->Count()));
-		wnd.draw(textureCounter);
-	}
-
-	void ShowFPS(sf::RenderWindow& wnd, sf::Clock& clock)
-	{
-		sf::Time elapsed = clock.restart();
-		fpsText.setString("FPS: " + std::to_string(elapsed.asSeconds()));
-		wnd.draw(fpsText);
+		score.setString("Score: " + std::to_string(Game::entityManager->Collisions()));
+		wnd.draw(score);
 	}
 }

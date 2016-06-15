@@ -31,6 +31,7 @@ Game::~Game()
 void Game::Run()
 {
 	DisplayInfo::Init();
+
 	threadSpawnMeteor.launch();
 
 	while (window.isOpen())
@@ -43,53 +44,26 @@ void Game::Run()
 	threadSpawnMeteor.terminate();
 }
 
-void Game::MainMenu()
-{
-	std::cout << "Showing main menu\n";
-}
-
 void Game::GameOver()
 {
-
 	window.draw(gameOver);
 }
 
-void Game::PauseMenu()
-{
-	std::cout << "Showing pause menu\n";
-}
-
-void Game::AddPointScore()
-{
-	std::cout << "SCORE DESGRACA\n";
-}
 
 void Game::Render()
 {
 	window.clear(sf::Color::Black);
 
-	if (gameState == GameState::ONSTART)
-	{
-		// Show the main menu
-		MainMenu();
-	}
-	else if (gameState == GameState::PAUSED)
-	{
-		PauseMenu();
-	}
-	else if (gameState == GameState::PLAYING)
+	if (gameState == GameState::PLAYING)
 	{
 		entityManager->RenderAll(window);
 	}
 	else if (gameState == GameState::GAMEOVER)
 	{
-
-		// Show a message
 		GameOver();
 	}
 
-	/*DisplayInfo::ShowObjectCounter(window);
-	DisplayInfo::ShowFPS(window, clock);*/
+	DisplayInfo::ShowScore(window);
 
 	window.display();
 }

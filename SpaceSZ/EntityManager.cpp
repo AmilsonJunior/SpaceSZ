@@ -2,13 +2,14 @@
 #include "GameFactory.h"
 #include "Bullet.h"
 #include "Meteor.h"
-#include "Score.h"
+
 #include <stdlib.h>
 #include <algorithm>
 
 
 EntityManager::EntityManager()
 {
+	collisions = 0;
 }
 
 
@@ -67,7 +68,7 @@ void EntityManager::RulesCollision()
 					|| (obj1.second->typeName == obj2.second->typeName))
 					continue;
 
-				Game::AddPointScore();
+				collisions++;
 
 				obj1.second->disable();
 				obj2.second->disable();

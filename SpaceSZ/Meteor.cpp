@@ -1,7 +1,5 @@
 #include "Meteor.h"
 
-#include <iostream>
-
 
 Meteor::Meteor(b2World* world, sf::Vector2f pos, bool dynamic)
 	: Entity(world, dynamic, pos)
@@ -24,7 +22,6 @@ Meteor::Meteor(b2World* world, sf::Vector2f pos, bool dynamic)
 Meteor::~Meteor()
 {
 	delete shape;
-	//std::cout << "DELETED METEORRRRRRRRRRRRRRRRRRRRRR\n";
 }
 
 void Meteor::PostUpdate(float time)

@@ -14,7 +14,6 @@
 #include "Player.h"
 #include "Meteor.h"
 #include "Bullet.h"
-#include "Score.h"
 
 namespace
 {
@@ -31,8 +30,6 @@ namespace
 	void SpawnMeteors();
 
 	int gameObjectCount = 1;
-
-	bool collision = false;
 
 	std::vector<std::shared_ptr<Meteor>> meteorsList;
 	std::vector<std::shared_ptr<Bullet>> bulletsList;
@@ -72,6 +69,8 @@ namespace
 		mutex.unlock();
 
 		Game::gameState = Game::GameState::PLAYING;
+
+		Game::entityManager->ResetCollisions();
 	}
 
 	void SpawnMeteors()
