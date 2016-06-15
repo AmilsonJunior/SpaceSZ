@@ -1,3 +1,6 @@
+#ifndef BULLET_HEADER
+#define BULLET_HEADER
+
 #include "Entity.h"
 
 class Bullet : public Entity
@@ -27,9 +30,9 @@ public:
 
 	void PostUpdate(float frametime)
 	{
-		body->SetLinearVelocity(b2Vec2(0, -90));
+		body->SetLinearVelocity(b2Vec2(0, -20));
 		
-		if (sprite.getPosition().y < -10)
+		if (sprite.getPosition().y < 0)
 		{
 			active = false;
 		}
@@ -44,3 +47,5 @@ private:
 	b2PolygonShape* shape;
 	sf::Vector2f _source;
 };
+
+#endif

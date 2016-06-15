@@ -1,7 +1,7 @@
 #include "Player.h"
 #include "Game.h"
 #include "GameFactory.h"
-#include "Bullet.h"
+
 
 Player::Player(b2World* world, sf::Vector2f pos)
 	: Entity(world, true, pos)
@@ -33,27 +33,20 @@ void Player::PostUpdate(float frametime)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{
 		//Move left
-		vel.x = b2Max(vel.x - 0.1f, -3.0f);
+		vel.x = b2Max(vel.x - 0.1f, -5.0f);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
 		//Move right
-		vel.x = b2Min(vel.x + 0.1f, 3.0f);
+		vel.x = b2Min(vel.x + 0.1f, 5.0f);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
-		vel.y = b2Max(vel.y - 0.1f, -3.0f);
+		vel.y = b2Max(vel.y - 0.1f, -5.0f);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{
 		vel.y = b2Min(vel.y + 0.1f, 3.0f);
-	}
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-	{
-		sf::Vector2f source = sf::Vector2f(sprite.getPosition().x, sprite.getPosition().y - sprite.getGlobalBounds().height / 2);
-		Bullet* proj = new Bullet(Game::GameWorld, true, source);
-		Game::entityManager->AddGameObject("bullet" + GenerateRandomID(), proj);
 	}
 
 	if (sprite.getPosition().y > Constants::WND_HEIGHT || sprite.getPosition().y < 0 ||
@@ -65,8 +58,8 @@ void Player::PostUpdate(float frametime)
 	}
 
 	body->SetLinearVelocity(vel);
-	body->SetTransform(body->GetPosition(), angle);
-	sprite.setRotation(body->GetAngle());
+	//body->SetTransform(body->GetPosition(), angle);
+	//sprite.setRotation(180/b2_pi * body->GetAngle());
 }
 
 void Player::Draw(sf::RenderWindow & wnd)

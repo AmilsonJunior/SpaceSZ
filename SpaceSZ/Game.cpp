@@ -8,8 +8,8 @@ Game::Game()
 	sf::ContextSettings cxt;
 	cxt.antialiasingLevel = 8;
 	
-	window.create(sf::VideoMode(Constants::WND_WIDTH, Constants::WND_HEIGHT), "Box2D and SFML", sf::Style::Default, cxt);
-	window.setFramerateLimit(90);
+	window.create(sf::VideoMode(Constants::WND_WIDTH, Constants::WND_HEIGHT), "SpaceSZ", sf::Style::Default, cxt);
+	window.setFramerateLimit(60);
 	
 	GameWorld = new b2World(gravity);
 	
@@ -18,22 +18,20 @@ Game::Game()
 	window.setMouseCursorVisible(false);
 
 	gameState = GameState::PLAYING;
-
+	collision = false;
 	CreateGameObjects();
 }
 
 
 Game::~Game()
 {
-	//threadMeteor.detach();
-	delete GameWorld;
+	
 }
 
 void Game::Run()
 {
-	threadMeteor = new std::thread(MeteorFuncThread);
-
 	DisplayInfo::Init();
+	threadSpawnMeteor.launch();
 
 	while (window.isOpen())
 	{
@@ -41,6 +39,8 @@ void Game::Run()
 		Update();
 		Render();
 	}
+
+	threadSpawnMeteor.terminate();
 }
 
 void Game::MainMenu()
@@ -50,12 +50,18 @@ void Game::MainMenu()
 
 void Game::GameOver()
 {
+
 	window.draw(gameOver);
 }
 
 void Game::PauseMenu()
 {
 	std::cout << "Showing pause menu\n";
+}
+
+void Game::AddPointScore()
+{
+	std::cout << "SCORE DESGRACA\n";
 }
 
 void Game::Render()
@@ -77,12 +83,13 @@ void Game::Render()
 	}
 	else if (gameState == GameState::GAMEOVER)
 	{
+
 		// Show a message
 		GameOver();
 	}
 
-	DisplayInfo::ShowObjectCounter(window);
-	DisplayInfo::ShowFPS(window, clock);
+	/*DisplayInfo::ShowObjectCounter(window);
+	DisplayInfo::ShowFPS(window, clock);*/
 
 	window.display();
 }
@@ -91,22 +98,22 @@ void Game::Update()
 {
 	if (gameState == GameState::PLAYING)
 	{
-		mu.lock();
+		mutex.lock();
 		GameWorld->Step(1 / 60.f, 8, 3);
-		mu.unlock();
-
+		mutex.unlock();
 		GameLoop();
 		entityManager->UpdateAll(clock.restart().asMilliseconds());
+		entityManager->RulesCollision();
 	}
 }
 
 void Game::HandleEvents()
 {
-	//Global events
-	sf::Event ev;
-	while (window.pollEvent(ev))
+	while (window.pollEvent(Event))
 	{
-		if (ev.type == sf::Event::Closed)
+		Events();
+
+		if (Event.type == sf::Event::Closed)
 		{
 			gameState = GameState::CLOSED;
 			window.close();
@@ -114,10 +121,9 @@ void Game::HandleEvents()
 
 		if (gameState == GameState::GAMEOVER)
 		{
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
 			{
 				Init();
-
 			}
 		}
 	}
@@ -126,5 +132,8 @@ void Game::HandleEvents()
 std::shared_ptr<EntityManager> Game::entityManager;
 std::shared_ptr<TextureManager> Game::textureManager;
 sf::RenderWindow Game::window;
+sf::Event Game::Event;
+sf::Clock Game::clock;
+bool Game::collision;
 Game::GameState Game::gameState;
 b2World* Game::GameWorld;

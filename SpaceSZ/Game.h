@@ -19,11 +19,15 @@ public:
 
 	static std::shared_ptr<EntityManager> entityManager;
 	static std::shared_ptr<TextureManager> textureManager;
+	static sf::Event Event;
 	static sf::RenderWindow window;
+	static sf::Clock clock;
+	static bool collision;
+
 	void MainMenu();
 	void GameOver();
 	void PauseMenu();
-
+	static void AddPointScore();
 	static b2World* GameWorld;
 	
 	enum class GameState
@@ -37,13 +41,13 @@ public:
 	};
 
 	static GameState gameState;
+
 private:
 	void Render();
 	void Update();
 	void HandleEvents();
 
-
-	sf::Clock clock;
 	b2Vec2 gravity;
+
 };
 

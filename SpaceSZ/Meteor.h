@@ -15,4 +15,3 @@ private:
 	b2CircleShape* shape;
 	b2Vec2 vel;
 };
-

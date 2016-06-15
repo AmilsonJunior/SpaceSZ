@@ -11,21 +11,20 @@ Meteor::Meteor(b2World* world, sf::Vector2f pos, bool dynamic)
 	shape = new b2CircleShape();
 	shape->m_radius = 0.7f;
 	
-	this->friction = 0.f;
+	this->friction = 0.1f;
 	this->density = rand() % 50 + 200;
 	this->typeName = "Meteor";
 
 	Initialize(shape, pos, dynamic, 0.5);
 
-	vel.x = rand() % 6 + (-6);
+	vel.x = rand() % 2;
 	vel.y = rand() % 10 + (1);
 }
 
 Meteor::~Meteor()
 {
 	delete shape;
-
-	std::cout << "Deleted meteor\n";
+	//std::cout << "DELETED METEORRRRRRRRRRRRRRRRRRRRRR\n";
 }
 
 void Meteor::PostUpdate(float time)

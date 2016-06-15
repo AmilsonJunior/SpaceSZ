@@ -4,8 +4,8 @@
 Entity::Entity(b2World* world, bool dynamic, const sf::Vector2f& pos)
 {
 	this->world = world;
-	this->texture = new sf::Texture();
 	this->bodyDef = new b2BodyDef();
+	texture = new sf::Texture();
 	active = true;
 	density = 0;
 	friction = 0;
@@ -15,11 +15,9 @@ Entity::~Entity()
 {
 	delete texture;
 	delete bodyDef;
-	//delete this->bodyShape;
 	delete fixDef;
-	delete texture;
-
-	std::cout << "Entity destroyed\n";
+	this->body->GetWorld()->DestroyBody(this->body);
+	//std::cout << "Entity destroyed\n";
 }
 
 void Entity::Initialize(b2Shape* shape, sf::Vector2f pos, bool dynamic, float scale)

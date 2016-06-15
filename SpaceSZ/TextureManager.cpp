@@ -6,10 +6,6 @@ TextureManager::TextureManager()
 
 TextureManager::~TextureManager()
 {
-	for (auto& x : pTextures)
-	{
-		delete x.second;
-	}
 }
 
 void TextureManager::LoadAllTextures()

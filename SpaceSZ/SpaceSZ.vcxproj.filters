@@ -30,6 +30,9 @@
     <ClInclude Include="DisplayInfo.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Score.h">
+      <Filter>GameObjects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp" />

@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include <fstream>
+#include <memory>
 
 #include "Entity.h"
 
@@ -12,16 +13,17 @@ public:
 	EntityManager();
 	~EntityManager();
 
-	void AddGameObject(const std::string& _name, Entity* _obj);
+	void AddGameObject(const std::string& _name, std::shared_ptr<Entity> _obj);
 	void DeleteGameObject(const std::string& _name);
-	Entity* GetGameObject(const std::string& _name) const;
+	std::shared_ptr<Entity> GetGameObject(const std::string& _name) const;
 	int Count() const { return _objects.size(); }
+	void RulesCollision();
 	void UpdateAll(float time);
 	void RenderAll(sf::RenderWindow& wnd);
 	void DeleteAll();
 
 private:
-	std::map<std::string, Entity*> _objects;
+	std::map<std::string, std::shared_ptr<Entity>> _objects;
 	std::vector<std::string> trash;
 };
 

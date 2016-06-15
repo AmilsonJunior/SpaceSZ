@@ -41,7 +41,8 @@ namespace DisplayInfo
 
 	void ShowFPS(sf::RenderWindow& wnd, sf::Clock& clock)
 	{
-		fpsText.setString("FPS: " + std::to_string(clock.restart().asMilliseconds()));
+		sf::Time elapsed = clock.restart();
+		fpsText.setString("FPS: " + std::to_string(elapsed.asSeconds()));
 		wnd.draw(fpsText);
 	}
 }

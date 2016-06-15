@@ -1,36 +1,47 @@
-#pragma once
+#ifndef GAMEFACTORY_HEADER
+#define GAMEFACTORY_HEADER
+
 #include <iostream>
 #include <string>
 #include <map>
 #include <thread>
+#include <list>
+
 #include "Entity.h"
 #include "Game.h"
 #include "TextureManager.h"
 #include "GroundExample.h"
 #include "Player.h"
 #include "Meteor.h"
-
+#include "Bullet.h"
+#include "Score.h"
 
 namespace
 {
-	void CreateMeteor(float x, float y);
-	void CreateGameObjects();
-	void CreatePlayer();
-	void GameLoop();
-	void MeteorFuncThread();
-	void Init();
-
+	//Declaração
+	std::shared_ptr<Meteor> CreateMeteor(float x, float y);
+	std::shared_ptr<Player> CreatePlayer();
+	std::shared_ptr<Bullet> CreateBullet(float x, float y);
 	std::string GenerateRandomID();
+
+	void CreateGameObjects();
+	void GameLoop();
+	void Events();
+	void Init();
+	void SpawnMeteors();
 
 	int gameObjectCount = 1;
 
-	std::vector<Entity*> meteorsList;
-	std::thread* threadMeteor;
-	std::mutex mu;
+	bool collision = false;
 
+	std::vector<std::shared_ptr<Meteor>> meteorsList;
+	std::vector<std::shared_ptr<Bullet>> bulletsList;
+
+	sf::Thread threadSpawnMeteor(&SpawnMeteors);
+	sf::Mutex mutex;
 	sf::Sprite gameOver;
 
-	//Create all game objects
+	//Implementação
 	void CreateGameObjects()
 	{
 		Game::textureManager->AddResource("Assets/textures/meteor1.png");
@@ -41,83 +52,84 @@ namespace
 		Game::textureManager->AddResource("Assets/textures/gameover.png");
 		Game::textureManager->LoadAllTextures();
 
-		Init();
-
 		gameOver.setTexture(*Game::textureManager->Get("Assets/textures/gameover.png"));
 		gameOver.setOrigin(gameOver.getGlobalBounds().width / 2, gameOver.getGlobalBounds().height / 2);
 		gameOver.setPosition(sf::Vector2f(Constants::WND_WIDTH / 2, Constants::WND_HEIGHT / 2));
+
+		Init();
 	}
 
 	void Init()
 	{
-		Game::gameState = Game::GameState::PLAYING;
-
 		if (Game::entityManager->Count() != 0)
 		{
 			Game::entityManager->DeleteGameObject("Player");
 			Game::entityManager->DeleteAll();
 		}
 
-		CreatePlayer();
+		mutex.lock();
+		Game::entityManager->AddGameObject("Player", CreatePlayer());
+		mutex.unlock();
+
+		Game::gameState = Game::GameState::PLAYING;
 	}
 
-	void MeteorFuncThread()
+	void SpawnMeteors()
 	{
 		while (true)
 		{
-			Sleep(100);
+			sf::sleep(sf::milliseconds(250));
+			mutex.lock();
+			meteorsList.push_back(CreateMeteor(rand() % Constants::WND_WIDTH, -(rand() % 20)));
+			mutex.unlock();
+		}
+	}
 
-			if (Game::gameState == Game::GameState::PLAYING)
+	void Fire()
+	{
+		auto playerPos = Game::entityManager->GetGameObject("Player")->GetPosition();
+		Game::entityManager->AddGameObject("bullet" + GenerateRandomID(), CreateBullet(playerPos.x, playerPos.y - 50));
+	}
+
+	void Events()
+	{
+		Game::window.setKeyRepeatEnabled(false);
+		if (sf::Event::KeyPressed)
+		{
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 			{
-				mu.lock();
-				Meteor* box = new Meteor(Game::GameWorld, sf::Vector2f(rand() % Constants::WND_WIDTH, -(rand() % 20)), true);
-				meteorsList.push_back(box);
-				mu.unlock();
-
-				std::cout << "opaaaaa" << meteorsList.size() << std::endl;
-			}
-			else
-			{
-				mu.lock();
-				for (auto& x : meteorsList)
-				{
-					x = NULL;
-					delete x;
-					//meteorsList.erase(std::remove(meteorsList.begin(), meteorsList.end(), x));
-				}
-
-				meteorsList.clear();
-				mu.unlock();
+				Fire();
 			}
 		}
 	}
 
 	void GameLoop()
 	{
-		mu.lock();
+		mutex.lock();
 		if (!meteorsList.empty())
 		{
-			Game::entityManager->AddGameObject("meteor" + GenerateRandomID(), meteorsList[meteorsList.size() - 1]);
-			meteorsList.pop_back();
+			Game::entityManager->AddGameObject("Meteor" + GenerateRandomID(), meteorsList.back());
+			meteorsList.back() = nullptr;
+			meteorsList.erase(std::remove(meteorsList.begin(), meteorsList.end(), meteorsList.back()));
 		}
-		mu.unlock();
-	}
-	
-
-	void CreateMeteor(float x, float y)
-	{
-		Meteor* meteor = new Meteor(Game::GameWorld, sf::Vector2f(x, y), true);
-		Game::entityManager->AddGameObject("meteor" + GenerateRandomID(), meteor);
-	}
-	
-	void CreatePlayer()
-	{
-		mu.lock();
-		Player* player = new Player(Game::GameWorld, sf::Vector2f(400, 500));
-		mu.unlock();
-		Game::entityManager->AddGameObject("Player", player);
+		mutex.unlock();	
 	}
 
+	std::shared_ptr<Bullet> CreateBullet(float x, float y)
+	{
+		std::shared_ptr<Bullet> bullet = std::make_shared<Bullet>(Game::GameWorld, true, sf::Vector2f(x, y));
+		return bullet;
+	}
+	std::shared_ptr<Meteor> CreateMeteor(float x, float y)
+	{
+		std::shared_ptr<Meteor> meteor = std::make_shared<Meteor>(Game::GameWorld, sf::Vector2f(x, y), true);
+		return meteor;
+	}
+	std::shared_ptr<Player> CreatePlayer()
+	{
+		std::shared_ptr<Player> player = std::make_shared<Player>(Game::GameWorld, sf::Vector2f(400, 500));
+		return player;
+	}
 	std::string GenerateRandomID()
 	{
 		auto randchar = []() -> char
@@ -136,3 +148,5 @@ namespace
 		return str;
 	}
 }
+
+#endif

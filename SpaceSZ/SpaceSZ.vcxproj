@@ -29,6 +29,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Meteor.h" />
     <ClInclude Include="Bullet.h" />
+    <ClInclude Include="Score.h" />
     <ClInclude Include="TextureManager.h" />
   </ItemGroup>
   <ItemGroup>

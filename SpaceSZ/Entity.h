@@ -13,9 +13,10 @@ public:
 	virtual void Update(float frameTime);
 	virtual void Draw(sf::RenderWindow& wnd);
 	virtual void HandleEvents(sf::Event& event);
+	void disable() { active = false; }
 	bool isActive() const { return active; }
 	sf::Vector2f GetPosition() const { return sprite.getPosition(); }
-
+	sf::FloatRect getGlobalBounds() const { return sprite.getGlobalBounds(); }
 	std::string typeName;
 	std::string ID;
 
